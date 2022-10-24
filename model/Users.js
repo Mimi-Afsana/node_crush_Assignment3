@@ -33,7 +33,7 @@ const userSchema = mongoose.Schema(
             minNumbers: 1,
             minSymbols: 1,
           });
-          message: "Password is not strong enough.";
+          message: "{VALUE}Password is not strong enough.";
         },
       },
     },
@@ -52,14 +52,14 @@ const userSchema = mongoose.Schema(
         type: String,
         lowercase: true,
         trim: true,
-        minLength: 3,
-        maxLength: 100,
+        minLength: 5,
+        maxLength: 200,
       },
     },
     role: {
       type: String,
       required: ["true", "role is required"],
-      enum: ["user", "Hiring Manager", "admin"],
+      enum: ["user", "hiring Manager", "admin"],
       default: "user",
     },
     imageURL: {
