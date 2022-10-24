@@ -3,7 +3,7 @@ const {
   signUp,
   findUserByEmail,
 } = require("../services/user.service");
-const { generateToken } = require("../Utils/tokens");
+const generateToken = require("../Utils/tokens");
 
 const signupUser = async (req, res) => {
   const userInfo = req.body;
@@ -41,7 +41,7 @@ const login = async (req, res) => {
     const correctPass = user.comparePassword(password);
 
     if (!correctPass) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: "Fail",
         error: "Email Or Password both is incorrect",
       });
@@ -77,11 +77,11 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     const user = await findUserByEmail(req.user?.email);
-    const { password: pass, ...others } = user.toObject();
+
+    const { password: pwd, ...others } = user.toObject();
 
     res.status(200).json({
       status: "success",
-      message: "user varified",
       data: {
         user: others,
       },

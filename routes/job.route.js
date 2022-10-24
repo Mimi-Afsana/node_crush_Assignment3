@@ -1,7 +1,7 @@
 const express = require("express");
 const jobController = require("../controllers/job.controller");
 const applyController = require("../controllers/apply.controller");
-const verifyToken = require("../middlewares/verifyToken");
+const  verifyToken  = require("../middlewares/verifyToken");
 
 const router = express.Router();
 

@@ -15,3 +15,7 @@ const hiringManager = async (req, res) => {
     });
   }
 };
+
+module.exports={
+  hiringManager
+}

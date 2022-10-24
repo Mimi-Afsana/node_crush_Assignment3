@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types;
 const validator = require("validator");
 var bcrypt = require("bcryptjs");
 
@@ -7,75 +7,75 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      lowercase: true,
+      required: [true, "Please provide a name"],
       trim: true,
-      minLength: 4,
-      maxLength: 100,
+      lowercase: true,
+      minLength: [3, "Name must be at least 3 characters."],
+      maxLength: [100, "Name is too large"],
     },
     email: {
       type: String,
-      validate: [validator.isEmail, "Please provide a valid Email"],
-      lowercase: true,
-      required: true,
-      unique: true,
+      validate: [validator.isEmail, "Provide a valid Email"],
       trim: true,
+      lowercase: true,
+      unique: true,
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
       validate: {
         validator: (value) => {
           validator.isStrongPassword(value, {
-            minLength: 5,
-            minLowercase: 1,
-            minUppercase: 1,
+            minLength: 6,
+            minLowercase: 3,
             minNumbers: 1,
+            minUppercase: 1,
             minSymbols: 1,
           });
-          message: "{VALUE}Password is not strong enough.";
+          message: "Password {VALUE} is not strong enough";
         },
       },
     },
     confirmPassword: {
       type: String,
-      required: true,
+      required: [true, "Please confirm your password"],
       validate: {
-        validators: function (value) {
-          return (value = this.password);
+        validator: function (value) {
+          return (value === this.password);
         },
-        message: "2 password must be match",
+        message: "Password don't match",
       },
     },
     companyName: {
       name: {
         type: String,
-        lowercase: true,
         trim: true,
-        minLength: 5,
-        maxLength: 200,
+        lowercase: true,
+        minLength: [3, "Name must be at least 3 characters."],
+        maxLength: [100, "Name is too large"],
       },
     },
     role: {
       type: String,
-      required: ["true", "role is required"],
-      enum: ["user", "hiring Manager", "admin"],
+      required: ["true", "Please required role"],
+      enum: ["user", "hiring manager", "admin"],
       default: "user",
     },
     imageURL: {
       type: String,
-      validate: validator.isURL,
+      validate: [validator.isURL, "Please provide a valid url"],
     },
     location: {
       type: String,
       lowercase: true,
-      trim: true,
+      message: "{VALUE} is not  acorrect division!",
     },
     status: {
       type: String,
       default: "active",
       enum: ["active", "inactive"],
     },
+
     consfirmationToken: String,
     consfirmationTokenExpires: Date,
 
@@ -85,6 +85,7 @@ const userSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
 userSchema.pre("save", function (next) {
   const password = this.password;
   const hashedPassword = bcrypt.hashSync(password);
@@ -100,5 +101,4 @@ userSchema.methods.comparePassword = function (password) {
 };
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;
